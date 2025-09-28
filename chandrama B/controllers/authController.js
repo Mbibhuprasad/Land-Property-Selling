@@ -1,5 +1,6 @@
+
 const User = require("../models/User");
-const generateToken = require("../utils/generateToken");
+
 
 exports.registerUser = async (req, res) => {
   try {
@@ -28,6 +29,10 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+
+
+const generateToken = require("../utils/generateToken");
+
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -36,15 +41,18 @@ exports.loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
-    if (user.role !== "user")
+
+    if (user.role !== "user") {
       return res
         .status(403)
         .json({ message: "Use admin login for admin accounts" });
+    }
 
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ message: "Invalid credentials" });
 
     const token = generateToken(user);
+
     res.json({
       token,
       user: {
@@ -55,10 +63,12 @@ exports.loginUser = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err);
+    console.error("login error:", err.message);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 // Admin register/login (note: protect admin registration in prod)
 exports.registerAdmin = async (req, res) => {

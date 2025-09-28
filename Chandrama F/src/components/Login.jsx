@@ -50,7 +50,6 @@ const Login = ({ onLoginSuccess }) => {
    try {
      const result = await login(formData);
      if (result.success) {
-       localStorage.setItem("token", result.token); // store token
        setIsSuccess(true);
        setTimeout(() => onLoginSuccess?.(), 1500);
      } else {

@@ -83,7 +83,7 @@ const Signup = () => {
             transition={{ delay: 0.2 }}
             className="text-3xl font-bold text-yellow-400 mb-2"
           >
-            Create Account
+            Create Accountedddd
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0 }}
