@@ -113,7 +113,7 @@ export default function PropertyCard({ property }) {
           />
         </motion.div>
 
-        <div className="p-6">
+        <div className="p-4">
           <h2 className="text-2xl font-bold text-[rgb(245,220,115)] mb-1 drop-shadow-md">
             {property.name}
           </h2>

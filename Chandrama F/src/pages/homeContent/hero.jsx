@@ -14,7 +14,7 @@ const properties = [
       "A luxury high-rise offering panoramic city views, smart-home integrations, and premium amenities. Designed for those seeking elegance and convenience in the heart of the metropolis. Experience urban sophistication redefined.",
     image:
       "https://images.shiksha.com/mediadata/images/1692684932phpi5X4au.jpeg",
-    category: "Luxury Apartments (Sale)",
+    category: "Innovative Plots For (Sale)",
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const properties = [
       "Waterfront properties blending contemporary architecture with natural serenity. Private docks, infinity pools, and sustainable design make these homes a sanctuary for discerning buyers seeking tranquility and exclusivity.",
     image:
       "https://www.sikshapedia.com/public/data/colleges/temple-city-institute-of-technology-and-engineering-khorda-orissa/fkMQYqbJ_D.webp",
-    category: "Waterfront Homes (Sale)",
+    category: "Perfect Area Plots (Sale)",
   },
 ];
 

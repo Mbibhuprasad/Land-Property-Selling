@@ -81,11 +81,12 @@ const PropertyDetails = ({ property, onClose, loading }) => {
         onClick={onClose}
       >
         <motion.div
-          className="bg-black rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          className="bg-black rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-y-auto"
           variants={modalVariants}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
+          {/* Header Image */}
           <div className="relative">
             <img
               src={
@@ -94,17 +95,36 @@ const PropertyDetails = ({ property, onClose, loading }) => {
                   : plotData.image
               }
               alt={plotData.name || plotData.title}
-              className="w-full h-64 object-cover rounded-t-2xl"
+              className="w-full h-52 object-cover rounded-t-2xl" // reduced size
             />
             <motion.button
               onClick={onClose}
-              className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+              className="absolute top-3 right-3 bg-black bg-opacity-60 text-white p-2 rounded-full hover:bg-opacity-80"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <IoClose size={24} />
+              <IoClose size={22} />
             </motion.button>
           </div>
+
+          {/* Gallery Section */}
+          {plotData.images && plotData.images.length > 1 && (
+            <div>
+              <h3 className="text-lg font-semibold text-yellow-500 mb-2">
+                Gallery
+              </h3>
+              <div className="grid grid-cols-3 gap-2">
+                {plotData.images.slice(1, 4).map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`${plotData.name} ${index + 2}`}
+                    className="w-full h-20 object-cover rounded-lg hover:scale-105 transition" // smaller thumbnails
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Content */}
           <div className="p-6">
@@ -158,26 +178,6 @@ const PropertyDetails = ({ property, onClose, loading }) => {
                   "This beautiful plot offers great potential for construction. Perfect for building your dream home with all necessary amenities nearby."}
               </p>
             </div>
-
-            {/* Amenities */}
-            {plotData.amenities && plotData.amenities.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold text-yellow-500 mb-2 flex items-center">
-                  <IoListOutline className="mr-2" />
-                  Amenities
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {plotData.amenities.map((amenity, index) => (
-                    <span
-                      key={index}
-                      className="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm"
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Additional Images */}
             {plotData.images && plotData.images.length > 1 && (

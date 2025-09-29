@@ -6,10 +6,12 @@ import PropertiesSection from "./homeContent/propsec";
 import ServicesSection from "./homeContent/ServicesSection";
 import TestimonialsSection from "./homeContent/TestimonialsSection";
 import { useProperty } from "../context/PropertyContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const { filteredProperties, filterProperties } = useProperty();
+  const navigate = useNavigate();
 
   const handleSearch = (filters) => {
     console.log("Search filters:", filters);
@@ -112,10 +114,20 @@ const Home = () => {
             through our services
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors shadow-md">
+            <button
+              onClick={() => {
+                navigate("/properties");
+              }}
+              className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors shadow-md"
+            >
               Browse Properties
             </button>
-            <button className="border border-yellow-500 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 hover:text-black transition-colors">
+            <button
+              onClick={() => {
+                navigate("/contact");
+              }}
+              className="border border-yellow-500 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 hover:text-black transition-colors"
+            >
               Contact Agent
             </button>
           </div>

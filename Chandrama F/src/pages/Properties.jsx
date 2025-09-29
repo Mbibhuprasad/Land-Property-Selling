@@ -1,14 +1,16 @@
 // PropertyComponent.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import ContactFormModal from "./homeContent/interestmodal"; // import modal
+import ContactFormModal from "./homeContent/interestmodal";
 import { BackenUrl } from "../utils/constant";
+import PropertyDetailsModal from "../pages/propertiesmodal"; // NEW modal import
 
 export default function PropertyComponent() {
   const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
-  const [contactModalProperty, setContactModalProperty] = useState(null); // for modal
+  const [contactModalProperty, setContactModalProperty] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Fetch all properties on mount
@@ -24,6 +26,8 @@ export default function PropertyComponent() {
     fetchProperties();
   }, []);
 
+  const navigate = useNavigate();
+
   // Fetch details when clicking "View Details"
   const handleViewDetails = async (id) => {
     setLoading(true);
@@ -32,10 +36,13 @@ export default function PropertyComponent() {
       const res = await axios.get(`${BackenUrl}/plots/${id}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+
       setSelectedProperty(res.data.plot);
+      console.log(res.data.plot);
     } catch (err) {
       console.error("Error fetching details:", err);
       alert("Login required to view details!");
+      navigate("/login");
     } finally {
       setLoading(false);
     }
@@ -45,15 +52,6 @@ export default function PropertyComponent() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
     hover: { scale: 1.03, boxShadow: "0 0 25px rgba(245,220,115,0.7)" },
-  };
-
-  const detailVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { type: "spring", stiffness: 300 },
-    },
   };
 
   return (
@@ -92,7 +90,6 @@ export default function PropertyComponent() {
                   <h2 className=" text-gray-300">Location : {p.location}</h2>
                   <p className="text-gray-300">Land Mark : {p.address}</p>
                   <p className="text-gray-300">Area : {p.squareFeet} sqft</p>
-                  
 
                   <motion.button
                     onClick={() => handleViewDetails(p.id)}
@@ -119,74 +116,11 @@ export default function PropertyComponent() {
         )}
       </AnimatePresence>
 
-      {/* Property Details */}
-      <AnimatePresence>
-        {selectedProperty && (
-          <motion.div
-            className="bg-gray-900 p-6 rounded-xl text-white w-[50%] m-auto shadow-2xl mt-6"
-            variants={detailVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-          >
-            <motion.button
-              onClick={() => setSelectedProperty(null)}
-              className="mb-4 px-4 py-2 bg-gray-700 text-[rgb(245,220,115)] rounded hover:bg-gray-600"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Back to List
-            </motion.button>
-
-            <h2 className="text-2xl font-bold mb-4">{selectedProperty.name}</h2>
-
-            {/* Image Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-              {selectedProperty.images?.slice(0, 4).map((img, idx) => (
-                <motion.img
-                  key={idx}
-                  src={img || "https://via.placeholder.com/400"}
-                  alt={`${selectedProperty.name}-${idx}`}
-                  className="w-full h-40 object-cover rounded-lg border border-yellow-500 shadow-lg hover:scale-105 transition-transform duration-300"
-                  whileHover={{ scale: 1.05 }}
-                />
-              ))}
-            </div>
-
-            <p>
-              <strong>Location:</strong> {selectedProperty.location}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedProperty.address}
-            </p>
-            <p>
-              <strong>Square Feet:</strong> {selectedProperty.squareFeet}
-            </p>
-            <p>
-              <strong>Price:</strong> ₹ {selectedProperty.price} Lakhs
-            </p>
-            <p>
-              <strong>Facing:</strong> {selectedProperty.facing}
-            </p>
-            <p>
-              <strong>Boundary:</strong> {selectedProperty.boundary}
-            </p>
-            <p className="mt-2">
-              <strong>Description:</strong> {selectedProperty.description}
-            </p>
-            {selectedProperty.amenities?.length > 0 && (
-              <div className="mt-2">
-                <strong>Amenities:</strong>
-                <ul className="list-disc ml-6">
-                  {selectedProperty.amenities.map((a, idx) => (
-                    <li key={idx}>{a}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Property Details Modal */}
+      <PropertyDetailsModal
+        property={selectedProperty}
+        onClose={() => setSelectedProperty(null)}
+      />
 
       {/* Contact Form Modal */}
       {contactModalProperty && (

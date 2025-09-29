@@ -9,6 +9,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,7 @@ const Login = ({ onLoginSuccess }) => {
     setFormData({ ...formData, [name]: value });
     if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
+  const navigate = useNavigate();
 
   const validateForm = () => {
     const newErrors = {};
@@ -52,6 +54,7 @@ const Login = ({ onLoginSuccess }) => {
      if (result.success) {
        setIsSuccess(true);
        setTimeout(() => onLoginSuccess?.(), 1500);
+       navigate("/");
      } else {
        setErrors({ general: result.message });
      }

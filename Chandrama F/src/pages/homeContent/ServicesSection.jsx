@@ -4,43 +4,43 @@ import { motion } from "framer-motion";
 
 const services = [
   {
-    name: "Verify Property Documents",
+    name: "Plot Buying Assistance",
     icon: "📑",
     description:
-      "Thorough verification of all property documents to ensure legal compliance and authenticity",
+      "Get expert guidance in selecting and buying plots across prime locations in Bhubaneswar",
   },
   {
-    name: "Home Construction",
-    icon: "🏗️",
+    name: "Legal Document Support",
+    icon: "📜",
     description:
-      "End-to-end construction services from planning to execution with quality materials",
+      "Complete assistance in verifying land records, registration papers, and legal compliance",
   },
   {
-    name: "Tenant Verification",
-    icon: "🧑‍💼",
+    name: "Site Visits",
+    icon: "📍",
     description:
-      "Comprehensive background checks and verification for potential tenants",
+      "Organized plot visits to help you explore and choose the right property with ease",
   },
   {
-    name: "Vastu Consultant",
+    name: "Vastu Guidance",
     icon: "🧭",
     description:
-      "Expert Vastu consultation for positive energy flow in your property",
+      "Consultation for Vastu-compliant plots to ensure harmony and positive energy",
   },
   {
-    name: "Bank Loan Services",
+    name: "Loan & EMI Assistance",
     icon: "🏦",
     description:
-      "Assistance with home loans and financing options from trusted banks",
+      "Help in arranging bank loans and easy EMI options for purchasing your dream plot",
   },
   {
-    name: "Packers & Movers",
-    icon: "🚚",
+    name: "Property Management",
+    icon: "🏡",
     description:
-      "Professional packing and moving services for hassle-free relocation",
+      "End-to-end property management services including maintenance and resale support",
   },
-  
 ];
+
 
 const ServicesSection = () => {
   const [activeService, setActiveService] = useState(null);

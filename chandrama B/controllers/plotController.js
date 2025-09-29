@@ -130,12 +130,17 @@ exports.getAllPublic = async (req, res) => {
 
 exports.getDetails = async (req, res) => {
   try {
-    const { id } = req.params;
-    const plot = await Plot.findById(id);
-    if (!plot) return res.status(404).json({ message: "Not found" });
-    res.json({ plot });
+    const plot = await Plot.findById(req.params.id);
+    if (!plot) {
+      return res.status(404).json({ message: "Plot not found" });
+    }
+
+    res.json({
+      message: "Protected plot details",
+      user: req.user,
+      plot, // 👈 return the actual plot details
+    });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
