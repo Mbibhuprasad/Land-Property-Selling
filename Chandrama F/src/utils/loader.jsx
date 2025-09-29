@@ -1,67 +1,128 @@
-// ChandraaRealconLoader.jsx
 import React from "react";
-import { motion } from "framer-motion";
+import styled, { keyframes } from "styled-components";
 
-export default function ChandraaRealconLoader() {
-  const text = "Chandraa Realcon";
+// Full-screen overlay
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-  const letterVariant = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.12,
-        duration: 0.35,
-        ease: "easeOut",
-      },
-    }),
-  };
+// Stroke line drawing
+const draw = keyframes`
+  to {
+    stroke-dashoffset: 0;
+  }
+`;
 
+// Fill fade-in
+const fillIn = keyframes`
+  from { fill: transparent; opacity: 0; }
+  to { fill: #f3ff47ff; opacity: 1; }
+`;
+
+const SvgText = styled.svg`
+  width: 90vw; /* ✅ scale to viewport width */
+  max-width: 100%; /* desktop limit */
+  height: auto;
+  max-height: 180px;
+
+  /* Responsive height caps */
+  @media (max-width: 768px) {
+    max-height: 140px;
+  }
+  @media (max-width: 480px) {
+    max-height: 110px;
+  }
+  @media (max-width: 320px) {
+    max-height: 90px;
+  }
+`;
+
+const StrokeText = styled.text`
+  font-size: 100px;
+  font-weight: 900;
+  letter-spacing: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+
+  stroke: #f3ff47ff;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  fill: transparent;
+
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: ${draw} 3.5s ease forwards;
+
+  /* Scale text for smaller screens */
+  @media (max-width: 768px) {
+    font-size: 70px;
+    letter-spacing: 10px;
+  }
+  @media (max-width: 480px) {
+    font-size: 50px;
+    letter-spacing: 6px;
+    stroke-width: 2.5;
+  }
+  @media (max-width: 320px) {
+    font-size: 36px;
+    letter-spacing: 4px;
+    stroke-width: 2;
+  }
+`;
+
+const FillText = styled.text`
+  font-size: 100px;
+  font-weight: 900;
+  letter-spacing: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+
+  fill: #f3ff47ff;
+  opacity: 0;
+  animation: ${fillIn} 0.8s ease forwards;
+  animation-delay: 1.5s;
+
+  /* Same responsive scaling */
+  @media (max-width: 768px) {
+    font-size: 70px;
+    letter-spacing: 10px;
+  }
+  @media (max-width: 480px) {
+    font-size: 50px;
+    letter-spacing: 6px;
+  }
+  @media (max-width: 320px) {
+    font-size: 36px;
+    letter-spacing: 4px;
+  }
+`;
+
+const Loader = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      <motion.div
-        className="relative"
-        initial={{ scale: 0.95 }}
-        animate={{ scale: [0.95, 1.05, 0.95] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      >
-        {/* Glowing Aura */}
-        <motion.div
-          className="absolute inset-0 rounded-lg"
-          style={{
-            filter: "blur(40px)",
-            background:
-              "radial-gradient(circle, rgba(245,220,115,0.6), rgba(203,168,126,0.1))",
-          }}
-          animate={{ opacity: [0.4, 0.8, 0.4], scale: [0.9, 1.1, 0.9] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
+    <Overlay>
+      <SvgText viewBox="0 0 500 200" preserveAspectRatio="xMidYMid meet">
+        {/* Fill Layer */}
+        <FillText x="50%" y="60%" textAnchor="middle" dominantBaseline="middle">
+          Chandrama Realcon
+        </FillText>
 
-        {/* Typing Text */}
-        <h1 className="relative text-4xl md:text-6xl font-extrabold tracking-wide flex bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-600 drop-shadow-lg">
-          {text.split("").map((char, i) => (
-            <motion.span
-              key={i}
-              custom={i}
-              variants={letterVariant}
-              initial="hidden"
-              animate="visible"
-              className="inline-block"
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-
-          {/* Blinking Cursor */}
-          <motion.span
-            className="ml-1 w-1 bg-yellow-400"
-            initial={{ opacity: 1 }}
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ repeat: Infinity, duration: 0.7 }}
-          />
-        </h1>
-      </motion.div>
-    </div>
+        {/* Stroke Layer */}
+        <StrokeText
+          x="50%"
+          y="60%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          Chandrama Realcon
+        </StrokeText>
+      </SvgText>
+    </Overlay>
   );
-}
+};
+
+export default Loader;

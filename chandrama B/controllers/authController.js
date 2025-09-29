@@ -113,20 +113,32 @@ exports.loginAdmin = async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match) return res.status(400).json({ message: "Invalid credentials" });
 
-  const jwt = require("jsonwebtoken");
+    const jwt = require("jsonwebtoken");
 
-  const generateToken = (user) => {
-    return jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
-      process.env.JWT_SECRET, // make sure this exists in your .env
-      { expiresIn: "1h" }
-    );
-  };
+    const generateToken = (user) => {
+      return jwt.sign(
+        { id: user._id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+    };
 
- 
+    // Generate token
+    const token = generateToken(user);
 
+    // Return token and user info
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
 };
+

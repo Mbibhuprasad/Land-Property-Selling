@@ -15,31 +15,49 @@ import AdminLogin from "./admin/AdminLogin";
 
 import PropertyComponent from "./pages/Properties";
 import FloatingButtons from "./components/Floating";
-const App = () => {
-  return (
-    <AuthProvider>
-      <PropertyProvider>
-        <Router>
-          <Navbar />
-          <div className="min-h-[80vh]">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/properties" element={<PropertyComponent />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+import ChandraaRealconLoader from "./utils/loader";
 
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-            </Routes>
-          </div>
-          <FloatingButtons />
-          <Footer />
-        </Router>
-      </PropertyProvider>
-    </AuthProvider>
+import { useState, useEffect } from "react";  
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3500); // Adjust time as needed for loader animation
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <ChandraaRealconLoader />;
+  }
+  return (
+    <>
+      <AuthProvider>
+        <PropertyProvider>
+          <Router>
+            <Navbar />
+            <div className="min-h-[80vh]">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/properties" element={<PropertyComponent />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+              </Routes>
+            </div>
+            <FloatingButtons />
+            <Footer />
+          </Router>
+        </PropertyProvider>
+      </AuthProvider>
+    </>
   );
 };
 
