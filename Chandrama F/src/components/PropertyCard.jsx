@@ -31,6 +31,7 @@ export default function PropertyCard({ property }) {
 
       const data = await response.json();
       setPropertyDetails(data.plot);
+     
       setShowDetails(true);
     } catch (err) {
       setError(err.message);

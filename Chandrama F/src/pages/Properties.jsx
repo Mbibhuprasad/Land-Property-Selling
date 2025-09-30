@@ -19,6 +19,7 @@ export default function PropertyComponent() {
       try {
         const res = await axios.get(`${BackenUrl}/plots`);
         setProperties(res.data.plots || []);
+        // console.log(res.data.plots);
       } catch (err) {
         console.error("Error fetching properties:", err);
       }
@@ -80,6 +81,7 @@ export default function PropertyComponent() {
               >
                 <img
                   src={p.image || "https://via.placeholder.com/200"}
+                  
                   alt={p.name}
                   className="w-full h-48 object-cover"
                 />

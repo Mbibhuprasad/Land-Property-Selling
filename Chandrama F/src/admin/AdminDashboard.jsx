@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -375,12 +375,18 @@ const PropertiesTab = ({
 
 // Property Card Component
 const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
+  // Use the first image from the images array, or fallback to property.image for backward compatibility
+  const displayImage =
+    property.images && property.images.length > 0
+      ? property.images[0]
+      : property.image;
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="h-48 bg-gray-200 overflow-hidden">
-        {property.image && property?.image?.length > 0 ? (
+        {displayImage ? (
           <img
-            src={property.image}
+            src={displayImage}
             alt={property.name}
             className="w-full h-full object-cover"
           />
@@ -420,7 +426,7 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
             <Edit className="h-5 w-5" />
           </button>
           <button
-            onClick={() => onDelete(property.id)}
+            onClick={() => onDelete(property._id || property.id)}
             className="text-red-600 hover:text-red-800 p-2"
           >
             <Trash2 className="h-5 w-5" />
@@ -433,6 +439,14 @@ const PropertyCard = ({ property, onView, onEdit, onDelete }) => {
 
 // View Property Dialog Component
 const ViewPropertyDialog = ({ property, onClose }) => {
+  // Use images array, fallback to single image for backward compatibility
+  const images =
+    property.images && property.images.length > 0
+      ? property.images
+      : property.image
+      ? [property.image]
+      : [];
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <motion.div
@@ -453,14 +467,19 @@ const ViewPropertyDialog = ({ property, onClose }) => {
         </div>
 
         <div className="p-6">
-          {/* Property Image */}
+          {/* Property Images Carousel */}
           <div className="h-64 bg-gray-200 rounded-lg mb-6 overflow-hidden">
-            {property.image && property?.image?.length > 0 ? (
-              <img
-                src={property.image}
-                alt={property.name}
-                className="w-full h-full object-cover"
-              />
+            {images.length > 0 ? (
+              <div className="flex space-x-2 overflow-x-auto h-full p-2">
+                {images.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`${property.name} ${index + 1}`}
+                    className="h-full w-auto object-cover rounded"
+                  />
+                ))}
+              </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-100">
                 <Home className="h-16 w-16 text-gray-400" />
@@ -583,12 +602,37 @@ const EditPropertyDialog = ({
       ? property.amenities.join(", ")
       : "",
   });
+  const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
+  const fileInputRef = useRef(null);
+
+  // Use images array, fallback to single image for backward compatibility
+  const existingImages =
+    property.images && property.images.length > 0
+      ? property.images
+      : property.image
+      ? [property.image]
+      : [];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    if (newFiles.length > 0) {
+      setNewImages((prev) => [...prev, ...newFiles]);
+      // Reset the file input to allow selecting the same file again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const removeNewImage = (index) => {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -618,7 +662,30 @@ const EditPropertyDialog = ({
         price: Number(formData.price),
       };
 
-      await updateProperty(property.id, updateData);
+      // If there are new images, we need to use FormData
+      if (newImages.length > 0) {
+        const formDataToSend = new FormData();
+
+        // Append form data
+        Object.keys(updateData).forEach((key) => {
+          if (key === "amenities") {
+            formDataToSend.append(key, JSON.stringify(updateData[key]));
+          } else {
+            formDataToSend.append(key, updateData[key]);
+          }
+        });
+
+        // Append new images
+        newImages.forEach((image) => {
+          formDataToSend.append("images", image);
+        });
+
+        await updateProperty(property._id || property.id, formDataToSend);
+      } else {
+        // No new images, send as JSON
+        await updateProperty(property._id || property.id, updateData);
+      }
+
       onSuccess();
       alert("Property updated successfully!");
     } catch (error) {
@@ -647,6 +714,72 @@ const EditPropertyDialog = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
+          {/* Existing Images */}
+          {existingImages.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Existing Images
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {existingImages.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`Existing ${index + 1}`}
+                    className="w-20 h-20 object-cover rounded border"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* New Images Upload */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Add New Images
+            </label>
+
+            {/* New Images Preview */}
+            {newImages.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">New Images to Add:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {newImages.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeNewImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleImageChange}
+              accept="image/*"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              Click to select images. You can select multiple images one by one.
+            </p>
+            <p className="text-sm text-gray-500">
+              {newImages.length} new image(s) selected
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1031,6 +1164,7 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -1038,7 +1172,18 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
   };
 
   const handleImageChange = (e) => {
-    setImages(Array.from(e.target.files));
+    const newFiles = Array.from(e.target.files);
+    if (newFiles.length > 0) {
+      setImages((prev) => [...prev, ...newFiles]);
+      // Reset the file input to allow selecting the same file again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -1232,10 +1377,38 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Images
             </label>
+
+            {/* Selected Images Preview */}
+            {images.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-2">Selected Images:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-20 object-cover rounded border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* File Input */}
             <input
+              ref={fileInputRef}
               type="file"
               multiple
               onChange={handleImageChange}
@@ -1243,7 +1416,10 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <p className="text-sm text-gray-500 mt-1">
-              {images.length} file(s) selected
+              Click to select images. You can select multiple images one by one.
+            </p>
+            <p className="text-sm text-gray-500">
+              {images.length} image(s) selected
             </p>
           </div>
 
