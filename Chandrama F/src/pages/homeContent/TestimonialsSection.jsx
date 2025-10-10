@@ -4,25 +4,25 @@ import { useRef, useEffect, useState } from "react";
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      name: "Rajesh Kumar",
+      name: "Sourav Behera",
       role: "Property Buyer",
       content:
-        "Assetlive helped me find my dream home in just two weeks. Their service was exceptional and the process was smooth.",
-      avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+        "ChandramaRealcone helped me find a beautiful plot near Patia, Bhubaneswar. The whole process was transparent and hassle-free. Truly impressed!",
+      avatar: "https://randomuser.me/api/portraits/men/45.jpg",
     },
     {
-      name: "Priya Singh",
+      name: "Ananya Rout",
       role: "Property Seller",
       content:
-        "I sold my property at a great price thanks to Assetlive's marketing and negotiation skills. Highly recommended!",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+        "I sold my land in Cuttack within a month through ChandramaRealcone. Their team was very supportive and handled everything professionally.",
+      avatar: "https://randomuser.me/api/portraits/women/47.jpg",
     },
     {
-      name: "Amit Patel",
+      name: "Debasish Nayak",
       role: "Investor",
       content:
-        "The investment properties suggested by Assetlive have given me excellent returns. Their market knowledge is impressive.",
-      avatar: "https://randomuser.me/api/portraits/men/62.jpg",
+        "I invested in a property near Khordha suggested by ChandramaRealcone, and it has already appreciated well. Their local market insight is excellent.",
+      avatar: "https://randomuser.me/api/portraits/men/53.jpg",
     },
   ];
 

@@ -7,6 +7,7 @@ const adminAuthRoutes = require("./routes/adminAuthRoutes");
 const plotRoutes = require("./routes/plotRoutes");
 const adminPlotRoutes = require("./routes/adminPlotRoutes");
 const emailConfig = require("./controllers/emailconfig");
+const contactformRoutes = require("./routes/contactformroute");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/admin/auth", adminAuthRoutes);
 app.use("/api/plots", plotRoutes);
 app.use("/api/admin/plots", adminPlotRoutes);
 app.use("/api/contact", emailConfig);
+app.use("/api/contactform", contactformRoutes);
 
 // simple health
 app.get("/", (req, res) => res.send("Plot Selling API"));

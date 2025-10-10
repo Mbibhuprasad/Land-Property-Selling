@@ -34,10 +34,13 @@ const AdminDashboard = () => {
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showUserDialog, setShowUserDialog] = useState(false);
+  const [showContactDialog, setShowContactDialog] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedContact, setSelectedContact] = useState(null);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [contacts, setContacts] = useState([]);
   const { properties, deleteProperty, updateProperty, users } =
     useContext(PropertyContext);
 
@@ -55,6 +58,36 @@ const AdminDashboard = () => {
     }
   }, []);
 
+  // Fetch contacts when contacts tab is active
+  useEffect(() => {
+    if (activeTab === "contacts") {
+      fetchContacts();
+    }
+  }, [activeTab]);
+
+  // Function to fetch contacts from backend
+  const fetchContacts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${BackenUrl}/contactform`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const contactsData = await response.json();
+        setContacts(contactsData);
+      } else {
+        console.error("Failed to fetch contacts");
+      }
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
+
   // View property details
   const viewProperty = (property) => {
     setSelectedProperty(property);
@@ -71,6 +104,12 @@ const AdminDashboard = () => {
   const viewUser = (user) => {
     setSelectedUser(user);
     setShowUserDialog(true);
+  };
+
+  // View contact details
+  const viewContact = (contact) => {
+    setSelectedContact(contact);
+    setShowContactDialog(true);
   };
 
   // Delete property
@@ -179,6 +218,22 @@ const AdminDashboard = () => {
                       Users
                     </button>
                   </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setActiveTab("contacts");
+                        setSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center px-4 py-3 rounded-lg transition-colors ${
+                        activeTab === "contacts"
+                          ? "bg-blue-700 text-white"
+                          : "text-blue-100 hover:bg-blue-700"
+                      }`}
+                    >
+                      <Mail className="mr-3 h-5 w-5" />
+                      Contact Users
+                    </button>
+                  </li>
                   <li className="mt-8">
                     <button
                       onClick={handleLogout}
@@ -233,6 +288,19 @@ const AdminDashboard = () => {
                   Users
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => setActiveTab("contacts")}
+                  className={`w-full flex items-center px-4 py-3 rounded-lg transition-colors ${
+                    activeTab === "contacts"
+                      ? "bg-blue-700 text-white"
+                      : "text-blue-100 hover:bg-blue-700"
+                  }`}
+                >
+                  <Mail className="mr-3 h-5 w-5" />
+                  Contact Users
+                </button>
+              </li>
               <li className="mt-8">
                 <button
                   onClick={handleLogout}
@@ -256,7 +324,9 @@ const AdminDashboard = () => {
             <h2 className="text-xl font-semibold text-gray-800">
               {activeTab === "properties"
                 ? "Property Management"
-                : "User Management"}
+                : activeTab === "users"
+                ? "User Management"
+                : "Contact Form Submissions"}
             </h2>
             <div className="w-10"></div> {/* Spacer for alignment */}
           </div>
@@ -273,8 +343,10 @@ const AdminDashboard = () => {
               showAddProperty={showAddProperty}
               setShowAddProperty={setShowAddProperty}
             />
-          ) : (
+          ) : activeTab === "users" ? (
             <UsersTab users={users} onView={viewUser} onDelete={deleteUser} />
+          ) : (
+            <ContactsTab contacts={contacts} onView={viewContact} />
           )}
         </main>
       </div>
@@ -316,6 +388,14 @@ const AdminDashboard = () => {
         <ViewUserDialog
           user={selectedUser}
           onClose={() => setShowUserDialog(false)}
+        />
+      )}
+
+      {/* View Contact Dialog */}
+      {showContactDialog && selectedContact && (
+        <ViewContactDialog
+          contact={selectedContact}
+          onClose={() => setShowContactDialog(false)}
         />
       )}
     </div>
@@ -1015,6 +1095,164 @@ const UsersTab = ({ users, onView, onDelete }) => {
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+// Contacts Tab Component
+const ContactsTab = ({ contacts, onView }) => {
+  return (
+    <div>
+      <h3 className="text-2xl font-bold text-gray-800 mb-6">
+        Contact Form Submissions
+      </h3>
+
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Message
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {contacts?.map((contact) => (
+              <tr key={contact._id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
+                    {contact.name}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">{contact.email}</div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="text-sm text-gray-500 max-w-xs truncate">
+                    {contact.message}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(
+                    contact.date || contact.createdAt
+                  ).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button
+                    onClick={() => onView(contact)}
+                    className="text-blue-600 hover:text-blue-900"
+                  >
+                    <Eye className="h-5 w-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {contacts?.length === 0 && (
+          <div className="text-center py-12">
+            <Mail className="h-16 w-16 mx-auto text-gray-400" />
+            <h3 className="text-xl font-semibold text-gray-700 mt-4">
+              No contact submissions found
+            </h3>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// View Contact Dialog Component
+const ViewContactDialog = ({ contact, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-screen overflow-y-auto"
+      >
+        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Contact Details
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        <div className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center text-gray-700">
+              <User size={18} className="mr-3 text-gray-500" />
+              <div>
+                <div className="font-semibold">Name</div>
+                <div>{contact.name}</div>
+              </div>
+            </div>
+
+            <div className="flex items-center text-gray-700">
+              <Mail size={18} className="mr-3 text-gray-500" />
+              <div>
+                <div className="font-semibold">Email</div>
+                <div>{contact.email}</div>
+              </div>
+            </div>
+
+            <div className="flex items-start text-gray-700">
+              <FileText size={18} className="mr-3 text-gray-500 mt-1" />
+              <div>
+                <div className="font-semibold">Message</div>
+                <div className="mt-1 whitespace-pre-wrap">
+                  {contact.message}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center text-gray-700">
+              <Calendar size={18} className="mr-3 text-gray-500" />
+              <div>
+                <div className="font-semibold">Submitted Date</div>
+                <div>
+                  {new Date(
+                    contact.date || contact.createdAt
+                  ).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 border-t border-gray-200 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Close
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 };

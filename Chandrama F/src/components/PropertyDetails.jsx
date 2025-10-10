@@ -179,24 +179,7 @@ const PropertyDetails = ({ property, onClose, loading }) => {
               </p>
             </div>
 
-            {/* Additional Images */}
-            {plotData.images && plotData.images.length > 1 && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold text-yellow-500 mb-2">
-                  Gallery
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {plotData.images.slice(1).map((image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`${plotData.name} ${index + 2}`}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+          
 
             {/* Price Details */}
             <div className="border-t border-gray-700 pt-4">

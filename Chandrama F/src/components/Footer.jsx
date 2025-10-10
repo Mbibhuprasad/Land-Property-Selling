@@ -82,7 +82,7 @@ const Footer = () => {
             Contact
           </h3>
           <p className="text-sm">📍 Bhubaneswar, Odisha, India</p>
-          <p className="text-sm">📞 +91 5354542897</p>
+          <p className="text-sm">📞 +91 7978982412</p>
           <p className="text-sm">✉️ chandramarealcon@gmail.com</p>
 
           {/* Social Icons */}

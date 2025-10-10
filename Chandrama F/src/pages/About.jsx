@@ -120,45 +120,136 @@ const About = () => {
     >
       <main>
         {/* --- Hero Section: The Vision --- */}
-        <section className="relative pt-24 pb-16 overflow-hidden">
+        <section className="relative pt-24 pb-16 overflow-hidden bg-black">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <motion.h1
-              className="text-6xl sm:text-8xl font-black mb-4 tracking-tighter"
-              initial={{ opacity: 0, y: -30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              Building Legacies, One Plot at a Time.
-            </motion.h1>
-            <motion.p
-              className={`text-xl sm:text-2xl mb-12 max-w-5xl mx-auto font-light`}
+            <motion.h2
+              className="text-4xl md:text-5xl font-bold mb-6  tracking-wide"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}  
+            >
+              Our Happy Investors
+            </motion.h2>
+            <motion.p
+              className="text-neutral-400 text-xl max-w-5xl mx-auto mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              style={{ color: accentColor }}
             >
-              The definitive opportunity for secure land ownership and
-              monumental returns in emerging metropolitan corridors.
+              Discover how our clients have transformed their investments into
+              thriving homes and future-ready opportunities. Here’s what they
+              have to say.
             </motion.p>
-            {/* Enhanced Hero Button styling with glow-like shadow (fixed dark mode shadow) */}
-            <motion.button
-              className="px-10 py-4 text-xl font-extrabold rounded-full transition-all duration-500 transform hover:scale-[1.07] shadow-lg hover:shadow-2xl"
-              style={{
-                backgroundColor: accentColor,
-                color: "rgb(50, 50, 50)", // Fixed text color for contrast
-                boxShadow: `0 10px 15px -3px rgba(245, 220, 75, 0.5), 0 4px 6px -2px rgba(245, 220, 75, 0.2)`,
-              }}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 150, delay: 0.4 }}
-            >
-              Explore Portfolio &rarr;
-            </motion.button>
+
+            {/* --- Review Cards --- */}
+            <div className="space-y-10">
+              {/* Row 1 (2 cards) */}
+              <motion.div
+                className="flex flex-wrap justify-center gap-8"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                {[
+                  {
+                    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+                    name: "Neha Sharma",
+                    review:
+                      "Absolutely loved the transparency! The plots are in prime locations with excellent growth potential.",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+                    name: "Aarav Patel",
+                    review:
+                      "Chandrama Realcon made my first investment journey effortless. The legal clarity and support were top-notch!",
+                  },
+                ].map((card, index) => (
+                  <motion.div
+                    key={index}
+                    className="relative bg-neutral-800 rounded-2xl shadow-lg overflow-hidden w-80 group hover:shadow-2xl transition-all duration-500"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <motion.img
+                      src={card.img}
+                      alt={card.name}
+                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="p-5 text-left">
+                      <h3
+                        className="text-xl font-bold mb-2"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        {card.name}
+                      </h3>
+                      <p className="text-neutral-400 text-sm leading-relaxed italic">
+                        “{card.review}”
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Row 2 (3 cards) */}
+              <motion.div
+                className="flex flex-wrap justify-center gap-8"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                {[
+                  {
+                    img: "https://images.unsplash.com/photo-1603415526960-f7e0328d7d2a",
+                    name: "Rohan Mehta",
+                    review:
+                      "I got possession immediately and even started construction. Their support team guided me through every step.",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+                    name: "Priya Das",
+                    review:
+                      "Incredible service! Within two years, my investment value has doubled. Truly a future-proof property.",
+                  },
+                  {
+                    img: "https://images.unsplash.com/photo-1599566150163-29194dcaad36",
+                    name: "Vikram Singh",
+                    review:
+                      "A trustworthy team with deep knowledge of real estate. Highly recommended for serious investors!",
+                  },
+                ].map((card, index) => (
+                  <motion.div
+                    key={index}
+                    className="relative bg-neutral-800 rounded-2xl shadow-lg overflow-hidden w-80 group hover:shadow-2xl transition-all duration-500"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <motion.img
+                      src={card.img}
+                      alt={card.name}
+                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="p-5 text-left">
+                      <h3
+                        className="text-xl font-bold mb-2"
+                        style={{ color: PRIMARY_COLOR }}
+                      >
+                        {card.name}
+                      </h3>
+                      <p className="text-neutral-400 text-sm leading-relaxed italic">
+                        “{card.review}”
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
           </div>
         </section>
 
         {/* --- Core Values Section (Large Content Block 1) --- */}
-        <section id="our-vision" className={`py-20 sm:py-32 bg-black`}>
+        <section id="our-vision" className={`py-5 sm:py-10 bg-black`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionTitle>
               Our Foundation: Principles that Drive Us
@@ -193,7 +284,7 @@ const About = () => {
         </section>
 
         {/* --- Location Advantage Section (Large Content Block 2) --- */}
-        <section id="location-advantage" className={`py-20 sm:py-32 bg-black`}>
+        <section id="location-advantage" className={`py-5 sm:py-20 bg-black`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionTitle>
               Strategic Location: The Apex of Connectivity
@@ -338,7 +429,7 @@ const About = () => {
         </section>
 
         {/* --- Investment Section (Large Content Block 3) --- */}
-        <section id="investment" className="py-20 sm:py-32">
+        <section id="investment" className="py-10 sm:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionTitle>
               Investment Portfolio: Analyzing Your Potential
@@ -417,7 +508,7 @@ const About = () => {
         </section>
 
         {/* --- Testimonial Section --- */}
-        <section className={`py-20 sm:py-32 bg-black`}>
+        <section className={`py-10 sm:py-20 bg-black`}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionTitle>Voices of Trust</SectionTitle>
             <motion.blockquote
