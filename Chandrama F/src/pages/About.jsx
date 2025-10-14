@@ -144,7 +144,7 @@ const About = () => {
             {/* --- Review Cards --- */}
             <div className="space-y-10">
               {/* Row 1 (2 cards) */}
-              <motion.div
+              {/* <motion.div
                 className="flex flex-wrap justify-center gap-8"
                 variants={containerVariants}
                 initial="hidden"
@@ -189,10 +189,10 @@ const About = () => {
                     </div>
                   </motion.div>
                 ))}
-              </motion.div>
+              </motion.div> */}
 
               {/* Row 2 (3 cards) */}
-              <motion.div
+              {/* <motion.div
                 className="flex flex-wrap justify-center gap-8"
                 variants={containerVariants}
                 initial="hidden"
@@ -243,7 +243,7 @@ const About = () => {
                     </div>
                   </motion.div>
                 ))}
-              </motion.div>
+              </motion.div> */}
             </div>
           </div>
         </section>

@@ -627,24 +627,6 @@ const ViewPropertyDialog = ({ property, onClose }) => {
                   <p className="text-gray-600">{property.description}</p>
                 </div>
               )}
-
-              {property.amenities && property.amenities.length > 0 && (
-                <div>
-                  <h5 className="font-semibold text-gray-800 mb-2">
-                    Amenities
-                  </h5>
-                  <div className="flex flex-wrap gap-2">
-                    {property.amenities.map((amenity, index) => (
-                      <span
-                        key={index}
-                        className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-                      >
-                        {amenity}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -678,9 +660,6 @@ const EditPropertyDialog = ({
     facing: property.facing || "",
     boundary: property.boundary || "",
     description: property.description || "",
-    amenities: Array.isArray(property.amenities)
-      ? property.amenities.join(", ")
-      : "",
   });
   const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -727,17 +706,8 @@ const EditPropertyDialog = ({
         throw new Error("No authentication token found. Please log in again.");
       }
 
-      // Prepare amenities array
-      const amenitiesArray = formData.amenities
-        ? formData.amenities
-            .split(",")
-            .map((item) => item.trim())
-            .filter((item) => item)
-        : [];
-
       const updateData = {
         ...formData,
-        amenities: amenitiesArray,
         squareFeet: Number(formData.squareFeet),
         price: Number(formData.price),
       };
@@ -748,11 +718,7 @@ const EditPropertyDialog = ({
 
         // Append form data
         Object.keys(updateData).forEach((key) => {
-          if (key === "amenities") {
-            formDataToSend.append(key, JSON.stringify(updateData[key]));
-          } else {
-            formDataToSend.append(key, updateData[key]);
-          }
+          formDataToSend.append(key, updateData[key]);
         });
 
         // Append new images
@@ -951,19 +917,6 @@ const EditPropertyDialog = ({
                 type="text"
                 name="boundary"
                 value={formData.boundary}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Amenities (comma separated)
-              </label>
-              <input
-                type="text"
-                name="amenities"
-                value={formData.amenities}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -1397,7 +1350,6 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
     facing: "",
     boundary: "",
     description: "",
-    amenities: "",
   });
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1429,48 +1381,48 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // Get the token from localStorage or AuthContext
       const token = localStorage.getItem("token") || (user && user.token);
-
-      if (!token) {
-        throw new Error("No authentication token found. Please log in again.");
-      }
+      if (!token) throw new Error("No authentication token found.");
 
       const formDataToSend = new FormData();
 
-      // Append form data
-      Object.keys(formData).forEach((key) => {
-        formDataToSend.append(key, formData[key]);
-      });
+      // Append each field individually
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append("squareFeet", formData.squareFeet);
+      formDataToSend.append("location", formData.location);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("facing", formData.facing);
+      formDataToSend.append("boundary", formData.boundary);
+      formDataToSend.append("description", formData.description);
 
       // Append images
-      images.forEach((image) => {
-        formDataToSend.append("images", image);
-      });
+      images.forEach((img) => formDataToSend.append("images", img));
 
       const response = await fetch(`${BackenUrl}/admin/plots`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // Don't set Content-Type header when sending FormData
-          // The browser will set it automatically with the correct boundary
         },
         body: formDataToSend,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("Server returned non-JSON:", text);
+        throw new Error("Invalid server response");
       }
 
-      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Upload failed");
+
+      alert("✅ Property added successfully!");
       onSuccess();
-      alert("Property added successfully!");
     } catch (error) {
       console.error("Error adding property:", error);
-      alert(`Failed to add property: ${error.message}`);
+      alert(`❌ Failed to add property: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -1582,19 +1534,6 @@ const AddPropertyForm = ({ onClose, onSuccess }) => {
                 type="text"
                 name="boundary"
                 value={formData.boundary}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Amenities (comma separated)
-              </label>
-              <input
-                type="text"
-                name="amenities"
-                value={formData.amenities}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

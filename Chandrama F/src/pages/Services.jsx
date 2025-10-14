@@ -317,20 +317,20 @@ const ServicePage = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-center">
                 <PhoneIcon className="h-5 w-5 mr-3" />
-                <span>+91 98765 43210</span>
+                <span>+91 7978982412</span>
               </div>
               <div className="flex items-center justify-center">
                 <EnvelopeIcon className="h-5 w-5 mr-3" />
-                <span>info@chandramarealcon.com</span>
+                <span>chandramarealcon@gmail.com</span>
               </div>
             </div>
           </div>
           <div className="bg-gray-950 p-6 rounded-lg border border-[rgb(245,220,115)]">
             <h3 className="text-xl font-semibold mb-4">Office Address</h3>
             <p>
-              123 Business Plaza, Sector 18
+              Bhubaneswar
               <br />
-              Gurugram, Haryana - 122001
+              Odisha, India
             </p>
           </div>
         </div>

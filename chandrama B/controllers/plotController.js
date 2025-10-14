@@ -1,5 +1,6 @@
 const Plot = require("../models/Plot");
 
+// CREATE
 exports.createPlot = async (req, res) => {
   try {
     const {
@@ -11,24 +12,10 @@ exports.createPlot = async (req, res) => {
       facing,
       boundary,
       description,
-      amenities,
     } = req.body;
 
-    let amenitiesArr = [];
-    if (amenities) {
-      try {
-        amenitiesArr = JSON.parse(amenities);
-      } catch {
-        amenitiesArr = ("" + amenities).split(",").map((s) => s.trim());
-      }
-    }
-
-    const images = (req.files || []).map(
-      (f) =>
-        `${process.env.BASE_URL || "http://localhost:5000"}/uploads/${
-          f.filename
-        }`
-    );
+    // Cloudinary gives secure URLs in req.files[].path
+    const images = (req.files || []).map((f) => f.path);
 
     const plot = await Plot.create({
       name,
@@ -39,7 +26,6 @@ exports.createPlot = async (req, res) => {
       facing,
       boundary,
       description,
-      amenities: amenitiesArr,
       images,
     });
 
@@ -50,28 +36,15 @@ exports.createPlot = async (req, res) => {
   }
 };
 
+// UPDATE
 exports.updatePlot = async (req, res) => {
   try {
     const { id } = req.params;
     const update = { ...req.body };
 
-    if (update.amenities) {
-      try {
-        update.amenities = JSON.parse(update.amenities);
-      } catch {
-        update.amenities = ("" + update.amenities)
-          .split(",")
-          .map((s) => s.trim());
-      }
-    }
-
+    // If new images uploaded, add their Cloudinary URLs
     if (req.files && req.files.length) {
-      const newImages = req.files.map(
-        (f) =>
-          `${process.env.BASE_URL || "http://localhost:5000"}/uploads/${
-            f.filename
-          }`
-      );
+      const newImages = req.files.map((f) => f.path);
       const plot = await Plot.findById(id);
       update.images = (plot.images || []).concat(newImages);
     }
@@ -118,7 +91,6 @@ exports.getAllPublic = async (req, res) => {
       facing: p.facing,
       boundary: p.boundary,
       description: p.description,
-      amenities: p.amenities,
       address: p.address,
     }));
     res.json({ plots: list });

@@ -10,7 +10,6 @@ const plotSchema = new mongoose.Schema({
   facing: { type: String },
   boundary: { type: String },
   description: { type: String },
-  amenities: [{ type: String }],
   createdAt: { type: Date, default: Date.now },
 });
 

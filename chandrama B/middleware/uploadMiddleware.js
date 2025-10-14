@@ -1,4 +1,6 @@
-const multer = require("multer");
+// in your routes
+const { upload } = require("../config/cloudinary");
+
 const path = require("path");
 const fs = require("fs");
 
