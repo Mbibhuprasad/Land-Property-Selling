@@ -53,9 +53,9 @@ export default function PropertyDetailsModal({ property, onClose }) {
             <p>
               <strong>Square Feet:</strong> {property.squareFeet}
             </p>
-            <p>
+            {/* <p>
               <strong>Price:</strong> ₹ {property.price} Lakhs
-            </p>
+            </p> */}
             <p>
               <strong>Facing:</strong> {property.facing}
             </p>

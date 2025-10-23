@@ -150,12 +150,13 @@ const PropertyDetails = ({ property, onClose, loading }) => {
               <div className="flex items-center text-gray-300">
                 <IoCubeOutline className="mr-2 text-yellow-500" />
                 <span>Boundary: {plotData.boundary || "Wall"}</span>
+                
               </div>
-              <div className="flex items-center text-gray-300">
+              {/* <div className="flex items-center text-gray-300">
                 <span className="font-semibold text-yellow-500">
                   ₹{plotData.price} Lakhs
                 </span>
-              </div>
+              </div> */}
             </div>
 
             {/* Address */}
